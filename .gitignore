@@ -50,6 +50,3 @@ Thumbs.db
 
 #dump file
 *.rdb
-
-#dev config
-config/devConfig.go

@@ -56,7 +56,8 @@ The Retry Manager employs an exponential backoff algorithm to retry events, grad
 
 ## Maintaining Order
 
-Events have event timestamp attached to it which will set order once delivery to destination is done.
+Wasnt sure about requirenment. Ideally this system is FIFO but if something goes in retry mechanism then it wont stop rest of the events, they will remian in order and retry-need event will comback in queue.
+Also Events have event timestamp attached to it for ordering.
 
 ## Delivery Isolation
 

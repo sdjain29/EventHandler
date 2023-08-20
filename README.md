@@ -76,6 +76,22 @@ To run the Event Routing and Delivery System MVP, follow these steps:
 docker-compose up
 ```
 
+## Ingesting an Event
+
+To ingest an event into the system, you can use the following `curl` command:
+
+```shell
+curl --location 'localhost:8080/event' \
+--header 'Content-Type: application/json' \
+--data '{
+    "userId":"USERID",
+    "payload":"PAYLOAD",
+    "destination":["DEST1", "DEST2"],
+    "eventTime":"2023-08-18T15:56:49.000000Z"
+}'
+```
+
+
 ## Test Cases
 
 | Case No. | Name                                   | Description                                          | Method                  |

@@ -75,6 +75,33 @@ To run the Event Routing and Delivery System MVP, follow these steps:
 docker-compose up
 ```
 
+## Test Cases
+
+| Case No. | Name                                   | Description                                          | Method                  |
+|----------|----------------------------------------|------------------------------------------------------|-------------------------|
+| 1        | Happy Flow                             | Event should get ingested and delivered to Destination | Store in Redis, Delivery to Destination |
+| 2        | Ingest Event                           | Test if an incoming event is successfully ingested   | Ingest and Redis Update |
+| 3        | Event Fan-out                          | Test if events are correctly routed to destinations  | Fetch from Redis, Route to Destinations |
+| 4        | Retry on Destination Failure           | Test if the system retries on destination failure   | Retry Mechanism          |
+| 5        | Retry Backoff Algorithm                | Test if the retry backoff algorithm is applied      | Backoff Algorithm       |
+| 6        | Max Retry Limit                        | Test if events are removed after max retries        | Retry Count Limit       |
+| 7        | Delivery Isolation                     | Test if one destination's failure doesn't affect others | Isolated Delivery       |
+| 8        | Durability on System Crash             | Test if ingested events survive a system crash      | Redis Persistence       |
+| 9        | At-least-once Delivery                 | Test if events are delivered at least once          | Retries and Acknowledgment |
+| 10       | Running the System with Docker Compose | Test running the system using Docker Compose        | Command Line            |
+| 11       | Invalid Event Ingestion                | Test if invalid events are rejected                | Validation Logic        |
+| 12       | Concurrent Event Ingestion             | Test simultaneous ingestion of multiple events     | Parallel Ingestion      |
+| 13       | Event Routing Configuration            | Test different event routing configurations        | Configuration Settings |
+| 14       | Event Retry Configuration              | Test different event retry configurations          | Configuration Settings |
+| 15       | Delivery to Multiple Destinations      | Test fan-out to multiple destinations              | Multiple Destinations  |
+| 16       | Successful Event Delivery              | Test successful event delivery to a destination    | Successful Delivery     |
+| 17       | Event Delivery Retry                   | Test if the system retries event delivery          | Retry Mechanism         |
+| 18       | Delivery Failure Handling              | Test handling of delivery failures                | Error Handling          |
+| 19       | System Stability                       | Test system stability over extended operation     | Long-duration Testing  |
+| 20       | Integration with Kafka                 | Test integration of Kafka for event processing     | Future Enhancement     |
+| 21       | Security and Authentication            | Test security measures for incoming events        | Future Enhancement     |
+| 22       | Event Processing Component             | Test event processing between ingestion and delivery | Future Enhancement     |
+
 ## Future Enhancements
 
 In the future, the system can be enhanced by introducing the following features:

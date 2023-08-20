@@ -6,6 +6,7 @@ import (
 	"EventHandler/utils"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"time"
 )
 
@@ -81,12 +82,9 @@ func pushEvent(event storage.Event) {
 		utils.RedisSetZDel(event.Destination, event.Id)
 		return
 	}
-	var output DestinationResponse
-	output.Status = "ACTIVE"
-	output.NextScheduleTime = float64(time.Now().Add(time.Minute * time.Duration(event.RetryCount*5)).Unix())
 	switch event.Destination {
 	case "DEST1", "DEST2", "DEST3":
-		output = dummypushEventUtils(DestEvent{UserId: event.UserId})
+		output := dummypushEventUtils(DestEvent{UserId: event.UserId, EventTime: event.EventTime}, event.RetryCount)
 		utils.RedisSetZDel(event.Destination, event.Id)
 		utils.RedisSetZAddWithoutContext(event.Destination, output.NextScheduleTime, event.Id)
 		event.Status = output.Status
@@ -94,9 +92,22 @@ func pushEvent(event storage.Event) {
 	}
 }
 
-func dummypushEventUtils(event DestEvent) DestinationResponse {
+func dummypushEventUtils(event DestEvent, retryCount int) DestinationResponse {
 	var output DestinationResponse
-	output.Status = "COMPLETED"
-	output.NextScheduleTime = float64(time.Now().Add(time.Minute * 5).Unix())
+	output.Status = "ACTIVE"
+	output.NextScheduleTime = float64(time.Now().Add(time.Minute * time.Duration(retryCount*5)).Unix())
+
+	prob := rand.Intn(100) + 1
+
+	switch {
+	case prob < 50: // success scenarios
+		output.Status = "COMPLETED"
+	case prob < 75: // failure scenarios
+		output.NextScheduleTime = float64(time.Now().Add(time.Minute * 5).Unix())
+	default: // delay, etc scenarios
+		time.Sleep(1 * time.Minute)
+		// base
+	}
+
 	return output
 }

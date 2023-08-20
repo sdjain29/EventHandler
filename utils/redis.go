@@ -2,7 +2,6 @@ package utils
 
 import (
 	core "EventHandler/init"
-	"EventHandler/logger"
 	"context"
 	"fmt"
 	"time"
@@ -16,8 +15,7 @@ func RedisSetInt(c *gin.Context, key string, value int, expiry time.Duration) {
 }
 
 func RedisSetZAdd(c *gin.Context, key string, score float64, value interface{}) {
-	result := core.RedisClient.ZAdd(context.Background(), key, redis.Z{Score: score, Member: value})
-	logger.Info(c, result)
+	core.RedisClient.ZAdd(context.Background(), key, redis.Z{Score: score, Member: value})
 }
 
 func RedisSetZAddWithoutContext(key string, score float64, value interface{}) {
@@ -42,7 +40,7 @@ func RedisSet(key string, value string, expiry time.Duration) {
 	core.RedisClient.Set(context.Background(), key, value, expiry)
 }
 
-func RedisDel(c *gin.Context, key string) {
+func RedisDel(key string) {
 	core.RedisClient.Del(context.Background(), key)
 }
 

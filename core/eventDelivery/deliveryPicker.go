@@ -30,8 +30,8 @@ func ProcessDelivery() {
 }
 
 func processDelivery(schema string) {
+	utils.ThreadRecovery()
 	for {
-		fmt.Println("looperrr ", schema)
 		process := utils.RedisZGet(schema, fmt.Sprint(time.Now().Unix()))
 		if len(process) == 0 {
 			time.Sleep(20 * time.Second)
@@ -40,7 +40,6 @@ func processDelivery(schema string) {
 		for _, j := range process {
 			utils.RedisSetZDel(schema, j)
 			event, err := utils.RedisGet(j)
-			fmt.Println(event)
 			if err == nil && event != "" {
 				var temp storage.Event
 				err := json.Unmarshal([]byte(event), &temp)
@@ -86,9 +85,14 @@ func pushEvent(event storage.Event) {
 	case "DEST1", "DEST2", "DEST3":
 		output := dummypushEventUtils(DestEvent{UserId: event.UserId, EventTime: event.EventTime}, event.RetryCount)
 		utils.RedisSetZDel(event.Destination, event.Id)
-		utils.RedisSetZAddWithoutContext(event.Destination, output.NextScheduleTime, event.Id)
-		event.Status = output.Status
-		updateEvent(event)
+		switch output.Status {
+		case "COMPLETED":
+			utils.RedisDel(event.Id)
+		default:
+			utils.RedisSetZAddWithoutContext(event.Destination, output.NextScheduleTime, event.Id)
+			event.Status = output.Status
+			updateEvent(event)
+		}
 	}
 }
 
@@ -102,6 +106,7 @@ func dummypushEventUtils(event DestEvent, retryCount int) DestinationResponse {
 	switch {
 	case prob < 50: // success scenarios
 		output.Status = "COMPLETED"
+		output.NextScheduleTime = float64(time.Now().Add(time.Minute * 5).Unix())
 	case prob < 75: // failure scenarios
 		output.NextScheduleTime = float64(time.Now().Add(time.Minute * 5).Unix())
 	default: // delay, etc scenarios

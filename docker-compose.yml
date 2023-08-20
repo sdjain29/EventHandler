@@ -1,0 +1,26 @@
+version: '2'
+services:
+  redis:
+    image: redis:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock    
+    ports:
+      - 6380:6379       
+  app:
+    build: .
+    command: ["go", "run", "main.go"]
+    privileged: true
+    environment:
+      ENV: DEV
+      ADMINTOKEN: QWERTYUIOP
+      MODE: EVENTHANDLER
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock     
+      - /usr/local/bin/docker:/bin/docker
+      - .:/go/src/app/
+    ports:
+      - "8080:11111"
+    depends_on:
+      - redis
+    links:
+      - redis

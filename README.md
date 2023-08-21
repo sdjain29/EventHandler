@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document provides an overview of the Minimum Viable Product (MVP) for an Event Routing and Delivery System that meets the specified requirements. The system is designed to fan-out events to multiple destinations while handling failures, ensuring durability, maintaining order, and providing at-least-once delivery.
+This document provides an overview of the Minimum Viable Product (MVP) for an Event Routing and Delivery System that meets the specified requirements. The system is designed to fan-out events to multiple destinations while handling failures, ensuring durability, maintaining order, and providing at-least-once delivery. **For horizontally scalable system, we will need to introduce messaging queue in further enhancements.**
 
 ## Requirements
 
